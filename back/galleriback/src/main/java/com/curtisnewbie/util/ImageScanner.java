@@ -39,23 +39,32 @@ public class ImageScanner {
     }
 
     public ImageScanner(ScanConfig scanConfig) {
-        if (validate(scanConfig.dir())) {
-            dir = Paths.get(scanConfig.dir());
+        if (validate(scanConfig.getDir())) {
+            dir = Paths.get(scanConfig.getDir());
             initialised.set(true);
-        } else if (validate(scanConfig.defaultDir())) {
-            dir = Paths.get(scanConfig.defaultDir());
-            initialised.set(true);
+        } else {
+            mkdir(scanConfig.getDefDir());
+            if (validate(scanConfig.getDefDir())) {
+                dir = Paths.get(scanConfig.getDefDir());
+                initialised.set(true);
+            }
         }
 
         if (isInitialised()) {
-            logger.info("Image Scanner Intialised. Supported Image Formats: {}, Scanning Directory: {}",
-                    IMAGE_EXT_LIST.toString(), dir.toString());
+            logger.info("Image Scanner Intialised. Supported Image Formats:{}, Scanning Directory:'{}'",
+                    Arrays.toString(IMAGE_EXT_LIST), dir.toString());
         } else {
             logger.error("Image Scanner Cannot Be Initialised, Internal Error! Aborting");
             System.exit(1);
         }
     }
 
+    /**
+     * Validate the path of dir
+     * 
+     * @param dir
+     * @return whether the dir is valid
+     */
     private boolean validate(String dir) {
         if (dir == null || dir.length() == 0)
             return false;
@@ -65,11 +74,26 @@ public class ImageScanner {
     }
 
     /**
-     * Scan diretory
+     * Attempt to mkdir, do nothing if the path of dir is illegal (NULL or empty)
      * 
-     * @return a {@code Stream} of {@code Path} or NULL if I/O error occurred.
+     * @param dir
+     */
+    private void mkdir(String dir) {
+        if (dir == null || dir.length() == 0)
+            return;
+        new File(dir).mkdir();
+    }
+
+    /**
+     * Scan diretory and return a Steam of Path, only when the ImageScanner is
+     * initialised. This can be verified using {@link ImageScanner#isInitialised()}
+     * 
+     * @return a {@code Stream} of {@code Path} or NULL if I/O error occurred or
+     *         ImageScanner not being initialised.
      */
     public Stream<Path> scan() {
+        if (!isInitialised())
+            return null;
         try {
             return Files.walk(dir).filter(p -> {
                 String ext = null;
@@ -90,17 +114,22 @@ public class ImageScanner {
         }
     }
 
+    /**
+     * Return Whether the ImageScanner is initialised.
+     * <p>
+     * It's an indicator of whether the ImageScanner is functioning. If it's not
+     * initialised, {@link ImageScanner#scan()} will do nothing.
+     */
     public boolean isInitialised() {
         return initialised.get();
     }
 
     /**
      * Extract file extension
-     * 
+     *
      * @param absPath
      * @param after   where the searching should end (inclusive), e.g., if
-     *                {@code after} = 5, it searches within [5 :
-     *                {@code absPath.length()}]
+     *                {@code after} = 5, it searches within [5 : absPath.length()-1]
      * @return file extension (without '.') or NULL if not found
      */
     private String extension(String absPath, int after) {
@@ -121,7 +150,7 @@ public class ImageScanner {
 
     /**
      * Extract file extension
-     * 
+     *
      * @param absPath
      * @return file extension (without '.') or NULL if not found
      */

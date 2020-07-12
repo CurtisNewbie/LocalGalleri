@@ -22,7 +22,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 @ApplicationScope
 public class ImageScanner {
     /** list of image format that may be supported by html img */
-    private static final String[] IMAGE_EXT_LIST = { "jpeg", "jpg", "png", "apng", "svg", "bmp" };
+    private static final String[] IMAGE_EXT_LIST = { "jpeg", "jpg", "png", "apng", "svg", "bmp", "gif" };
     private static final Set<String> IMAGE_EXT_SET;
     /** Max len among the names of supported image formats */
     private static final int IMAGE_EXT_MAXLEN;
@@ -32,10 +32,12 @@ public class ImageScanner {
 
     static {
         int len = 0;
-        for (String s : IMAGE_EXT_LIST)
+        IMAGE_EXT_SET = new HashSet<String>();
+        for (String s : IMAGE_EXT_LIST) {
             len = s.length() > len ? s.length() : len;
+            IMAGE_EXT_SET.add(s.toLowerCase());
+        }
         IMAGE_EXT_MAXLEN = len;
-        IMAGE_EXT_SET = new HashSet<String>(Arrays.asList(IMAGE_EXT_LIST));
     }
 
     public ImageScanner(ScanConfig scanConfig) {
@@ -103,7 +105,7 @@ public class ImageScanner {
                     ext = extension(absPath, len - IMAGE_EXT_MAXLEN);
                 else
                     ext = extension(absPath);
-                if (ext != null && IMAGE_EXT_SET.contains(ext))
+                if (ext != null && IMAGE_EXT_SET.contains(ext.toLowerCase()))
                     return true;
                 else
                     return false;

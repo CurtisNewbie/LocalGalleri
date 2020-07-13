@@ -2,6 +2,12 @@ package com.curtisnewbie.boundary;
 
 import java.io.*;
 import java.util.*;
+import com.curtisnewbie.model.ImageModel;
+import com.curtisnewbie.model.ImageModelAssembler;
+import com.curtisnewbie.util.ImageManager;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,25 +16,38 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
  * RestController for Image resources
- * 
+ * </p>
  */
-// TODO: Not implemented yet, consider changing to HAETOAES
 @RestController
 @RequestMapping(path = "/image")
 public class ImageController {
 
+    private final ImageManager imageManager;
+    private final ImageModelAssembler assembler;
 
-    // TODO: Change File to EntityModel
-    @GetMapping("/id/{imgId}")
-    public ResponseEntity<File> imageById(@PathVariable("imgId") String id) {
-        return null;
+    public ImageController(ImageManager imageManager, ImageModelAssembler assembler) {
+        this.imageManager = imageManager;
+        this.assembler = assembler;
     }
 
-    // TODO: Change List<File> to CollectionModel
-    @GetMapping("/all")
-    public ResponseEntity<List<File>> images() {
-        return null;
+    @GetMapping(path = "/id/{imgId}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> imageById(@PathVariable("imgId") int imgId) {
+        return ResponseEntity.of(imageManager.get(imgId));
+    }
+
+    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectionModel<ImageModel>> images() {
+        CollectionModel<ImageModel> models = assembler.toModels(imageManager.list());
+        models.add(WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder.methodOn(ImageController.class).images()).withRel("all"));
+        return ResponseEntity.ok(models);
     }
 
     // TODO: Change List<File> to CollectionModel

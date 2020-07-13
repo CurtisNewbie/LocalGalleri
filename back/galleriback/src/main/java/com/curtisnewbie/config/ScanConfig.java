@@ -4,7 +4,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
+ * ------------------------------------
+ * <p>
+ * Author: Yongjie Zhuang
+ * <p>
+ * ------------------------------------
+ * <p>
  * Configuration in {@code application.properties} for image scanning
+ * </p>
  */
 @Component
 @ConfigurationProperties(prefix = "scan")

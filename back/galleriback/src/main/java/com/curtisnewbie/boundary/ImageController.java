@@ -1,7 +1,5 @@
 package com.curtisnewbie.boundary;
 
-import java.io.*;
-import java.util.*;
 import com.curtisnewbie.model.ImageModel;
 import com.curtisnewbie.model.ImageModelAssembler;
 import com.curtisnewbie.util.ImageManager;
@@ -12,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -50,11 +47,15 @@ public class ImageController {
         return ResponseEntity.ok(models);
     }
 
-    // TODO: Change List<File> to CollectionModel
-    @GetMapping("/page")
-    public ResponseEntity<List<File>> imagesOfPage(
-            @RequestParam(name = "start", required = false) int start,
-            @RequestParam(name = "end", required = false) int end) {
-        return null;
+    @GetMapping(path = "/page/{pageNo}/limit/{perPage}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectionModel<ImageModel>> imagesOfPage(
+            @PathVariable("pageNo") int page, @PathVariable("perPage") int limit) {
+        CollectionModel<ImageModel> models =
+                assembler.toModels(imageManager.listOfPage(page, limit));
+        models.add(WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder.methodOn(ImageController.class).imagesOfPage(page, limit))
+                .withRel("page"));
+        return ResponseEntity.ok(models);
     }
 }

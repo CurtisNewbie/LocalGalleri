@@ -58,6 +58,28 @@ public class ImageManager {
     }
 
     /**
+     * Get a list of file id in spcified page that can then be used to retrieve the actual file
+     * 
+     * @param page  page starting at 1
+     * @param limit number of images in each page
+     * @return list of file id
+     * @see ImageManager#get(int)
+     */
+    public List<Integer> listOfPage(int page, int limit) {
+        List<Integer> list = list();
+        int n = list.size();
+        if (limit >= n) {
+            return list;
+        } else {
+            List<Integer> lp = new ArrayList<>();
+            for (int i = (page > 1 ? page - 1 : 0) * limit; i < n && i < page * limit; i++) {
+                lp.add(list.get(i));
+            }
+            return lp;
+        }
+    }
+
+    /**
      * Get all bytes of a File by its id
      * 
      * @param id id

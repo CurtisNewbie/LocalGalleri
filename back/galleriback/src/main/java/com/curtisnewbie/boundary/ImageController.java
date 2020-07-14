@@ -1,5 +1,6 @@
 package com.curtisnewbie.boundary;
 
+import java.util.List;
 import com.curtisnewbie.model.ImageModel;
 import com.curtisnewbie.model.ImageModelAssembler;
 import com.curtisnewbie.util.ImageManager;
@@ -51,11 +52,15 @@ public class ImageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<ImageModel>> imagesOfPage(
             @PathVariable("pageNo") int page, @PathVariable("perPage") int limit) {
-        CollectionModel<ImageModel> models =
-                assembler.toModels(imageManager.listOfPage(page, limit));
-        models.add(WebMvcLinkBuilder
-                .linkTo(WebMvcLinkBuilder.methodOn(ImageController.class).imagesOfPage(page, limit))
-                .withRel("page"));
-        return ResponseEntity.ok(models);
+        List<Integer> ids = imageManager.listOfPage(page, limit);
+        if (ids.size() > 0) {
+            CollectionModel<ImageModel> models = assembler.toModels(ids);
+            models.add(WebMvcLinkBuilder.linkTo(
+                    WebMvcLinkBuilder.methodOn(ImageController.class).imagesOfPage(page, limit))
+                    .withRel("page"));
+            return ResponseEntity.ok(models);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 }

@@ -1,0 +1,35 @@
+@media (min-width: 576px) {
+  cdk-virtual-scroll-viewport {
+    height: 100vh; /* fixed viewport height*/
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    list-style: none;
+  }
+}
+
+@media (min-width: 992px) {
+  cdk-virtual-scroll-viewport {
+    height: 100vh; /* fixed viewport height*/
+    width: 70vw; /* fixed viewport width*/
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    list-style: none;
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+  }
+}
+
+li {
+  height: 500px;
+  margin: 10px;
+  padding: 10px;
+  background: whitesmoke;
+}
+
+img {
+  height: 100%;
+}

@@ -1,0 +1,7 @@
+<div class="container text-center">
+    <cdk-virtual-scroll-viewport role="list" itemSize="500">
+        <li *cdkVirtualFor="let img of images; templateCacheSize: 10">
+            <a [href]="img.href" target="_blank"> <img class="img-fluid" [src]="img.href" /></a>
+        </li>
+    </cdk-virtual-scroll-viewport>
+</div>

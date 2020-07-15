@@ -37,7 +37,8 @@ public class ImageManager {
         scheduledScan();
     }
 
-    @Scheduled(fixedRate = 1 * 60 * 1000) // per minute
+    // TODO: Is it really necessary to schedule the scanning?
+    // @Scheduled(fixedRate = 1 * 60 * 1000) // per minute
     private void scheduledScan() {
         logger.info("Scheduled Scanning.");
         scanner.scan().forEach(p -> {

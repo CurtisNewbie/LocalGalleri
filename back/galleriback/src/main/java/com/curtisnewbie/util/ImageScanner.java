@@ -53,6 +53,7 @@ public class ImageScanner {
             dir = Paths.get(scanConfig.getDir());
             initialised.set(true);
         } else {
+            logger.info("Diectory ('{}') illegal, using default directory.", scanConfig.getDir());
             mkdir(scanConfig.getDefDir());
             if (validate(scanConfig.getDefDir())) {
                 dir = Paths.get(scanConfig.getDefDir());
@@ -62,7 +63,7 @@ public class ImageScanner {
 
         if (isInitialised()) {
             logger.info(
-                    "Image Scanner Intialised. Supported Image Formats:{}, Scanning Directory:'{}'",
+                    "Image Scanner Intialised. Supported Image Formats:{}\nScanning Directory:'{}'",
                     Arrays.toString(IMAGE_EXT_LIST), dir.toString());
         } else {
             logger.error("Image Scanner Cannot Be Initialised, Internal Error! Aborting");

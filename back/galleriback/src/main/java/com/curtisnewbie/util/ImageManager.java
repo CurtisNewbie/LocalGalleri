@@ -40,7 +40,7 @@ public class ImageManager {
     // TODO: Is it really necessary to schedule the scanning?
     // @Scheduled(fixedRate = 1 * 60 * 1000) // per minute
     private void scheduledScan() {
-        logger.info("Scheduled Scanning.");
+        logger.info("Scanning.");
         scanner.scan().forEach(p -> {
             images.putIfAbsent(p.hashCode(), p);
         });

@@ -1,6 +1,6 @@
 <div class="container-fluid text-center bg-secondary">
-    <cdk-virtual-scroll-viewport role="list" itemSize="700" maxBufferPx="1400" class="mx-auto">
-        <div class="imgdiv bg-white rounded" *cdkVirtualFor="let img of images; templateCacheSize: 5">
+    <cdk-virtual-scroll-viewport role="list" itemSize="700" maxBufferPx="1400">
+        <div class="imgdiv bg-white rounded mx-auto" *cdkVirtualFor="let img of images; templateCacheSize: 5">
             <a [href]="img.href" target="_blank" class="h-100 d-flex">
                 <img class="img-fluid align-self-center mx-auto rounded" [src]="img.href" />
             </a>

@@ -19,9 +19,9 @@ import org.springframework.web.context.annotation.ApplicationScope;
  * <p>
  * ------------------------------------
  * <p>
- * Class that manages all images discovered. It also internally schedules scanning operation based
- * on the configuration, however the actually scanning operation is implemented in
- * {@link ImageScanner#scan()}
+ * Class that manages all images discovered. It also internally schedules
+ * scanning operation based on the configuration, however the actually scanning
+ * operation is implemented in {@link ImageScanner#scan()}
  * </p>
  */
 @Component
@@ -40,7 +40,6 @@ public class ImageManager {
     // TODO: Is it really necessary to schedule the scanning?
     // @Scheduled(fixedRate = 1 * 60 * 1000) // per minute
     private void scheduledScan() {
-        logger.info("Scanning.");
         scanner.scan().forEach(p -> {
             images.putIfAbsent(p.hashCode(), p);
         });
@@ -59,7 +58,8 @@ public class ImageManager {
     }
 
     /**
-     * Get a list of file id in spcified page that can then be used to retrieve the actual file
+     * Get a list of file id in spcified page that can then be used to retrieve the
+     * actual file
      * 
      * @param page  page starting at 1
      * @param limit number of images in each page

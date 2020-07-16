@@ -29,8 +29,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 @ApplicationScope
 public class ImageScanner {
     /** list of image format that may be supported by html img */
-    private static final String[] IMAGE_EXT_LIST =
-            {"jpeg", "jpg", "png", "apng", "svg", "bmp", "gif"};
+    private static final String[] IMAGE_EXT_LIST = { "jpeg", "jpg", "png", "apng", "svg", "bmp", "gif" };
     private static final Set<String> IMAGE_EXT_SET;
     /** Max len among the names of supported image formats */
     private static final int IMAGE_EXT_MAXLEN;
@@ -62,9 +61,8 @@ public class ImageScanner {
         }
 
         if (isInitialised()) {
-            logger.info(
-                    "Image Scanner Intialised. Supported Image Formats:{}\nScanning Directory:'{}'",
-                    Arrays.toString(IMAGE_EXT_LIST), dir.toString());
+            logger.info("Image Scanner intialised, using directory:'{}', supported image formats:{},", dir.toString(),
+                    Arrays.toString(IMAGE_EXT_LIST));
         } else {
             logger.error("Image Scanner Cannot Be Initialised, Internal Error! Aborting");
             System.exit(1);
@@ -97,16 +95,17 @@ public class ImageScanner {
     }
 
     /**
-     * Scan diretory and return a Steam of Path, only when the ImageScanner is initialised. This can
-     * be verified using {@link ImageScanner#isInitialised()}
+     * Scan diretory and return a Steam of Path, only when the ImageScanner is
+     * initialised. This can be verified using {@link ImageScanner#isInitialised()}
      * 
-     * @return a {@code Stream} of {@code Path} or NULL if I/O error occurred or ImageScanner not
-     *         being initialised.
+     * @return a {@code Stream} of {@code Path} or NULL if I/O error occurred or
+     *         ImageScanner not being initialised.
      */
     public Stream<Path> scan() {
         if (!isInitialised())
             return null;
         try {
+            logger.info("Scanning Dir: '{}'", dir);
             return Files.walk(dir).filter(p -> {
                 String ext = null;
                 String absPath = p.toString();
@@ -129,8 +128,8 @@ public class ImageScanner {
     /**
      * Return Whether the ImageScanner is initialised.
      * <p>
-     * It's an indicator of whether the ImageScanner is functioning. If it's not initialised,
-     * {@link ImageScanner#scan()} will do nothing.
+     * It's an indicator of whether the ImageScanner is functioning. If it's not
+     * initialised, {@link ImageScanner#scan()} will do nothing.
      */
     public boolean isInitialised() {
         return initialised.get();
@@ -140,8 +139,8 @@ public class ImageScanner {
      * Extract file extension
      *
      * @param absPath
-     * @param after   where the searching should end (inclusive), e.g., if {@code after} = 5, it
-     *                searches within [5 : absPath.length()-1]
+     * @param after   where the searching should end (inclusive), e.g., if
+     *                {@code after} = 5, it searches within [5 : absPath.length()-1]
      * @return file extension (without '.') or NULL if not found
      */
     private String extension(String absPath, int after) {

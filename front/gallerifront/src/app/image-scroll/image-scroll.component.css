@@ -10,11 +10,22 @@ cdk-virtual-scroll-viewport {
 
 .imgdiv {
   width: 85vw;
-  height: 700px;
   margin: 10px;
   padding: 10px;
   background: whitesmoke;
 }
+
+/* @media (max-width: 549) {
+  .imgdiv {
+    height: 300px;
+  }
+}
+
+@media (min-width: 550) {
+  .imgdiv {
+    height: 700px;
+  }
+} */
 
 img {
   max-width: 98%;

@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.ApplicationScope;
 
 /**
  * ------------------------------------
@@ -30,7 +29,6 @@ import org.springframework.web.context.annotation.ApplicationScope;
  * </p>
  */
 @Component
-@ApplicationScope
 public class ImageManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageManager.class);

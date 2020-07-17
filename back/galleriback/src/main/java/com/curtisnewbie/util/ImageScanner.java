@@ -13,7 +13,6 @@ import com.curtisnewbie.config.ScanConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.ApplicationScope;
 
 /**
  * ------------------------------------
@@ -26,7 +25,6 @@ import org.springframework.web.context.annotation.ApplicationScope;
  * </p>
  */
 @Component
-@ApplicationScope
 public class ImageScanner {
     /** list of image format that may be supported by html img */
     private static final String[] IMAGE_EXT_LIST = { "jpeg", "jpg", "png", "apng", "svg", "bmp", "gif" };

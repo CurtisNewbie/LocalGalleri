@@ -6,8 +6,13 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.ApplicationScope;
@@ -93,17 +98,35 @@ public class ImageManager {
             return Optional.empty();
 
         if (path.toFile().exists()) {
-            try {
-                byte[] bytes = Files.readAllBytes(path);
-                return Optional.of(bytes);
-            } catch (IOException e) {
-                logger.error("Error occurred while reading bytes of a file: {}", e.toString());
+            Future<byte[]> bFuture = readAllBytes(path); // try to read all bytes in another thread
+            while (!bFuture.isDone() && !bFuture.isCancelled())
+                ;
+            if (bFuture.isDone()) {
+                try {
+                    byte[] bytes = bFuture.get();
+                    if (bytes != null)
+                        return Optional.of(bytes);
+                } catch (InterruptedException | ExecutionException e) {
+                    logger.error("Error occurred while reading bytes of a file: {}", e.toString());
+                }
             }
         } else {
             // path exists but file not exists
             images.remove(id);
         }
         return Optional.empty();
+    }
+
+    @Async
+    private Future<byte[]> readAllBytes(Path path) {
+        // logger.info("readAllBytes() Thread: {}", Thread.currentThread().getId());
+        try {
+            byte[] bytes = Files.readAllBytes(path);
+            return new AsyncResult<>(bytes);
+        } catch (IOException e) {
+            logger.error("Error occurred while reading bytes of a file: {}", e.toString());
+        }
+        return new AsyncResult<byte[]>(null);
     }
 
     /**

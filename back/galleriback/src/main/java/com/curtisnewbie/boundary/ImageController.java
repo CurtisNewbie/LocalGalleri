@@ -43,7 +43,6 @@ public class ImageController {
 
     @GetMapping(path = "/id/{imgId}", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> imageById(@PathVariable("imgId") int imgId) {
-        logger.info("Request image of id: '{}'", imgId);
         return ResponseEntity.of(imageManager.get(imgId));
     }
 

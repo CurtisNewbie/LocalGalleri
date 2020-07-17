@@ -96,6 +96,7 @@ public class ImageManager {
             return Optional.empty();
 
         if (path.toFile().exists()) {
+            logger.info("Reading Image: '{}'", path.toString());
             Future<byte[]> bFuture = readAllBytes(path); // try to read all bytes in another thread
             while (!bFuture.isDone() && !bFuture.isCancelled())
                 ;

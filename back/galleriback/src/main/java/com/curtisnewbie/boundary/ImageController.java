@@ -7,6 +7,7 @@ import com.curtisnewbie.util.ImageManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
@@ -42,8 +43,8 @@ public class ImageController {
     }
 
     @GetMapping(path = "/id/{imgId}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> imageById(@PathVariable("imgId") int imgId) {
-        return ResponseEntity.of(imageManager.get(imgId));
+    public ResponseEntity<FileSystemResource> imageById(@PathVariable("imgId") int imgId) {
+        return ResponseEntity.of(imageManager.getFileResource(imgId));
     }
 
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)

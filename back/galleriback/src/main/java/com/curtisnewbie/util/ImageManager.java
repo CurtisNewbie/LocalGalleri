@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -89,7 +90,8 @@ public class ImageManager {
      * @param id id
      * @return all bytes of a file
      */
-    public Optional<byte[]> get(int id) {
+    @Deprecated(forRemoval = true)
+    public Optional<byte[]> getBytes(int id) {
         Path path = images.get(id);
         // path not exists
         if (path == null)
@@ -116,6 +118,27 @@ public class ImageManager {
         return Optional.empty();
     }
 
+    /**
+     * Get {@code FileSystemResource} of a File by its id
+     * 
+     * @param id id
+     * @return FileSystemResouce
+     */
+    public Optional<FileSystemResource> getFileResource(int id) {
+        Path path = images.get(id);
+        // path not exists
+        if (path == null)
+            return Optional.empty();
+
+        if (path.toFile().exists()) {
+            logger.info("Reading Image: '{}'", path.toString());
+            return Optional.of(new FileSystemResource(path));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Deprecated(forRemoval = true)
     @Async
     private Future<byte[]> readAllBytes(Path path) {
         // logger.info("readAllBytes() Thread: {}", Thread.currentThread().getId());

@@ -18,4 +18,7 @@ The default directory being scanned is `/galleriImages`, which is also a fallbac
 
 # Demo
 
+[23/07/2020] 
+Images being displayed in demo are GIF images.
+
 <img src="https://user-images.githubusercontent.com/45169791/88256323-922d9e00-cced-11ea-8c88-22a6d47e6f0a.gif" width="800">

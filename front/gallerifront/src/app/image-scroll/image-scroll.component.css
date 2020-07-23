@@ -8,6 +8,10 @@ cdk-virtual-scroll-viewport {
   /* list-style: none; */
 }
 
+::-webkit-scrollbar {
+  width: 0px;
+}
+
 .imgdiv {
   width: 85vw;
   margin: 10px;

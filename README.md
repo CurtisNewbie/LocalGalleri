@@ -16,6 +16,14 @@ The default directory being scanned is `/galleriImages`, which is also a fallbac
 
 > java -jar galleriback-0.0.1.jar --scan.dir=my/images/to/be/shared
 
+Then the website is available at:
+
+> http://localhost:8080/
+
+And you will need to change `localhost` to the ip address of the hoster as follows:
+
+> http://192.168.1.1:8080/
+
 # Demo
 
 [23/07/2020] 

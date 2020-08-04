@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageScanner {
     /** list of image format that may be supported by html img */
-    private static final String[] IMAGE_EXT_LIST = { "jpeg", "jpg", "png", "apng", "svg", "bmp", "gif" };
+    private static final String[] IMAGE_EXT_LIST = { "jpeg", "jpg", "png", "apng", "svg", "bmp", "gif", "webp" };
     private static final Set<String> IMAGE_EXT_SET;
     /** Max len among the names of supported image formats */
     private static final int IMAGE_EXT_MAXLEN;
@@ -109,7 +109,7 @@ public class ImageScanner {
                 String absPath = p.toString();
                 int len = absPath.length();
                 if (len > IMAGE_EXT_MAXLEN)
-                    ext = extension(absPath, len - IMAGE_EXT_MAXLEN);
+                    ext = extension(absPath, len - IMAGE_EXT_MAXLEN - 1);
                 else
                     ext = extension(absPath);
                 if (ext != null && IMAGE_EXT_SET.contains(ext.toLowerCase()))

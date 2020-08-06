@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.scheduling.annotation.Scheduled;
+// import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,7 +34,7 @@ public class ImageManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageManager.class);
     private final ImageScanner scanner;
-    private volatile boolean listShuffled;
+    private final boolean listShuffled;
     private ConcurrentMap<Integer, Path> images = new ConcurrentHashMap<>();
 
     public ImageManager(ImageScanner scanner, ManageConfig managerConfig) {

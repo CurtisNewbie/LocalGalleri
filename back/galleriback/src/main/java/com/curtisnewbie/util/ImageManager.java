@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import com.curtisnewbie.config.ImageManagerConfig;
+import com.curtisnewbie.config.ManageConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -37,7 +37,7 @@ public class ImageManager {
     private volatile boolean listShuffled;
     private ConcurrentMap<Integer, Path> images = new ConcurrentHashMap<>();
 
-    public ImageManager(ImageScanner scanner, ImageManagerConfig managerConfig) {
+    public ImageManager(ImageScanner scanner, ManageConfig managerConfig) {
         this.scanner = scanner;
         this.listShuffled = managerConfig.isListShuffled();
         scheduledScan();
@@ -53,7 +53,7 @@ public class ImageManager {
 
     /**
      * Get a list of file id that can then be used to retrieve the actual file. The returned list
-     * may be shuffled depending on the configuration of {@link ImageManagerConfig#isListShuffled()}
+     * may be shuffled depending on the configuration of {@link ManageConfig#isListShuffled()}
      * 
      * @return list of file id
      * @see ImageManager#get(int)

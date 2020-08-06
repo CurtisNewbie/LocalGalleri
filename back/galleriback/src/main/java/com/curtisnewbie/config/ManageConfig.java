@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "manage")
-public class ImageManagerConfig {
+public class ManageConfig {
 
     /** whether the list of images fetched from backend should be shuffled */
     private boolean listShuffled;

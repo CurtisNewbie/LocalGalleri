@@ -1,5 +1,5 @@
 <div class="container-fluid text-center bg-secondary">
-    <cdk-virtual-scroll-viewport #virtualScroll [itemSize]="itemHeight" [maxBufferPx]="itemHeight * 2">
+    <cdk-virtual-scroll-viewport #virtualScroll [itemSize]="itemHeight" [maxBufferPx]="itemHeight">
         <div #imgContainers class="imgdiv bg-white rounded mx-auto" *cdkVirtualFor="let img of images;"
             [style.height.px]="itemHeight">
             <a [href]="img.href" target="_blank" class="h-100 d-flex">

@@ -7,4 +7,9 @@
             </a>
         </div>
     </cdk-virtual-scroll-viewport>
+    <div class="text-right">
+        <button class="btn btn-primary button m-2">Current page: {{currPage}}</button>
+        <button class="btn btn-primary button m-2" (click)="lastPage()">Last page</button>
+        <button class="btn btn-primary button m-2" (click)="nextPage()">Next page</button>
+    </div>
 </div>

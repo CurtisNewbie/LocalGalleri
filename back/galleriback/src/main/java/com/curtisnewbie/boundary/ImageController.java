@@ -3,13 +3,13 @@ package com.curtisnewbie.boundary;
 import java.io.IOException;
 import java.util.List;
 
+import com.curtisnewbie.config.ManageConfig;
 import com.curtisnewbie.model.ImageModel;
 import com.curtisnewbie.model.ImageModelAssembler;
 import com.curtisnewbie.util.ImageManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -41,10 +41,14 @@ public class ImageController {
     private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
     private final ImageManager imageManager;
     private final ImageModelAssembler assembler;
+    private final ManageConfig manageConfig;
 
-    public ImageController(ImageManager imageManager, ImageModelAssembler assembler) {
+    public ImageController(ImageManager imageManager,
+                           ImageModelAssembler assembler,
+                           ManageConfig manageConfig) {
         this.imageManager = imageManager;
         this.assembler = assembler;
+        this.manageConfig = manageConfig;
     }
 
     @GetMapping(path = "/id/{imgId}", produces = MediaType.IMAGE_PNG_VALUE)
@@ -59,7 +63,8 @@ public class ImageController {
 
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<ImageModel>> images() {
-        CollectionModel<ImageModel> models = assembler.toModels(imageManager.list());
+        CollectionModel<ImageModel> models = assembler.toModels(manageConfig.isListShuffled() ?
+                imageManager.listAllAndShuffle() : imageManager.listAll());
         models.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ImageController.class).images()).withRel("all"));
         return ResponseEntity.ok(models);
     }

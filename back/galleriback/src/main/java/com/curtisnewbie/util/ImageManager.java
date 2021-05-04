@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import com.curtisnewbie.config.ManageConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -37,12 +36,10 @@ public class ImageManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageManager.class);
     private final ImageScanner scanner;
-    private final boolean listShuffled;
     private ConcurrentMap<Integer, Path> images = new ConcurrentHashMap<>();
 
-    public ImageManager(ImageScanner scanner, ManageConfig managerConfig) {
+    public ImageManager(ImageScanner scanner) {
         this.scanner = scanner;
-        this.listShuffled = managerConfig.isListShuffled();
         scheduledScan();
     }
 
@@ -55,18 +52,25 @@ public class ImageManager {
     }
 
     /**
-     * Get a list of file id that can then be used to retrieve the actual file. The returned list may be shuffled
-     * depending on the configuration of {@link ManageConfig#isListShuffled()}
+     * Get a list of file id that can then be used to retrieve the actual file.
      *
      * @return list of file id
-     * @see ImageManager#get(int)
      */
-    public List<Integer> list() {
+    public List<Integer> listAll() {
         List<Integer> paths = new ArrayList<>();
         images.keySet().forEach(l -> paths.add(l));
-        if (listShuffled)
-            Collections.shuffle(paths);
         return paths;
+    }
+
+    /**
+     * Get a list of file id that can then be used to retrieve the actual file. The list is alwasys shuffled.
+     *
+     * @return list of file id
+     */
+    public List<Integer> listAllAndShuffle() {
+        List<Integer> list = listAll();
+        Collections.shuffle(list);
+        return list;
     }
 
     /**
@@ -75,10 +79,9 @@ public class ImageManager {
      * @param page  page starting at 1
      * @param limit number of images in each page
      * @return list of file id
-     * @see ImageManager#get(int)
      */
     public List<Integer> listOfPage(int page, int limit) {
-        List<Integer> list = list();
+        List<Integer> list = listAll();
         int n = list.size();
         if (limit >= n) {
             return list;
@@ -146,6 +149,7 @@ public class ImageManager {
 
     /**
      * Read image file and transfer it to the given outputStream using nio Channel
+     *
      * @param id
      * @param outputStream
      * @throws IOException

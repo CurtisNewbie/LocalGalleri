@@ -1,5 +1,8 @@
 package com.curtisnewbie.util;
 
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.*;
@@ -8,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import com.curtisnewbie.config.ManageConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +28,8 @@ import org.springframework.stereotype.Component;
  * <p>
  * ------------------------------------
  * <p>
- * Class that manages all images discovered. It also internally schedules scanning operation based
- * on the configuration, however the actually scanning operation is implemented in
- * {@link ImageScanner#scan()}
+ * Class that manages all images discovered. It also internally schedules scanning operation based on the configuration,
+ * however the actually scanning operation is implemented in {@link ImageScanner#scan()}
  * </p>
  */
 @Component
@@ -52,9 +55,9 @@ public class ImageManager {
     }
 
     /**
-     * Get a list of file id that can then be used to retrieve the actual file. The returned list
-     * may be shuffled depending on the configuration of {@link ManageConfig#isListShuffled()}
-     * 
+     * Get a list of file id that can then be used to retrieve the actual file. The returned list may be shuffled
+     * depending on the configuration of {@link ManageConfig#isListShuffled()}
+     *
      * @return list of file id
      * @see ImageManager#get(int)
      */
@@ -68,7 +71,7 @@ public class ImageManager {
 
     /**
      * Get a list of file id in spcified page that can then be used to retrieve the actual file
-     * 
+     *
      * @param page  page starting at 1
      * @param limit number of images in each page
      * @return list of file id
@@ -90,11 +93,11 @@ public class ImageManager {
 
     /**
      * Get all bytes of a File by its id
-     * 
+     *
      * @param id id
      * @return all bytes of a file
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated
     public Optional<byte[]> getBytes(int id) {
         Path path = images.get(id);
         // path not exists
@@ -104,7 +107,7 @@ public class ImageManager {
         if (path.toFile().exists()) {
             logger.info("Reading Image: '{}'", path.toString());
             Future<byte[]> bFuture = readAllBytes(path); // try to read all bytes in another thread
-            while (!bFuture.isDone() && !bFuture.isCancelled());
+            while (!bFuture.isDone() && !bFuture.isCancelled()) ;
             if (bFuture.isDone()) {
                 try {
                     byte[] bytes = bFuture.get();
@@ -123,7 +126,7 @@ public class ImageManager {
 
     /**
      * Get {@code FileSystemResource} of a File by its id
-     * 
+     *
      * @param id id
      * @return FileSystemResouce
      */
@@ -141,7 +144,25 @@ public class ImageManager {
         }
     }
 
-    @Deprecated(forRemoval = true)
+    /**
+     * Read image file and transfer it to the given outputStream using nio Channel
+     * @param id
+     * @param outputStream
+     * @throws IOException
+     */
+    public void readByChannel(int id, OutputStream outputStream) throws IOException {
+        Path path = images.get(id);
+        if (path == null || !path.toFile().exists())
+            throw new FileNotFoundException("id: " + id);
+
+        try (FileChannel fileChannel = FileChannel.open(path);
+             WritableByteChannel toChannel = Channels.newChannel(outputStream);
+        ) {
+            fileChannel.transferTo(0, fileChannel.size(), toChannel);
+        }
+    }
+
+    @Deprecated
     @Async
     private Future<byte[]> readAllBytes(Path path) {
         // logger.info("readAllBytes() Thread: {}", Thread.currentThread().getId());
@@ -156,7 +177,7 @@ public class ImageManager {
 
     /**
      * Delete Image by its id
-     * 
+     *
      * @param id id
      */
     public void delete(int id) {

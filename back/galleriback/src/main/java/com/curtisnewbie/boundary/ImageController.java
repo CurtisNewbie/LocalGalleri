@@ -1,6 +1,8 @@
 package com.curtisnewbie.boundary;
 
+import java.io.IOException;
 import java.util.List;
+
 import com.curtisnewbie.model.ImageModel;
 import com.curtisnewbie.model.ImageModelAssembler;
 import com.curtisnewbie.util.ImageManager;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * ------------------------------------
@@ -43,8 +48,13 @@ public class ImageController {
     }
 
     @GetMapping(path = "/id/{imgId}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<FileSystemResource> imageById(@PathVariable("imgId") int imgId) {
-        return ResponseEntity.of(imageManager.getFileResource(imgId));
+    public void imageById(@PathVariable("imgId") int imgId, HttpServletResponse resp) {
+        try {
+            imageManager.readByChannel(imgId, resp.getOutputStream());
+        } catch (IOException e) {
+            resp.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            logger.error("Error occurred while transferring image data", e);
+        }
     }
 
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,7 +66,7 @@ public class ImageController {
 
     @GetMapping(path = "/page/{pageNo}/limit/{perPage}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<ImageModel>> imagesOfPage(@PathVariable("pageNo") int page,
-            @PathVariable("perPage") int limit) {
+                                                                    @PathVariable("perPage") int limit) {
         List<Integer> ids = imageManager.listOfPage(page, limit);
         if (ids.size() > 0) {
             CollectionModel<ImageModel> models = assembler.toModels(ids);

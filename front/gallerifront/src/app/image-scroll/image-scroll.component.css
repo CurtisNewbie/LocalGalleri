@@ -1,5 +1,5 @@
 cdk-virtual-scroll-viewport {
-  height: 90vh; /* fixed viewport height*/
+  height: 94vh; /* fixed viewport height*/
   /* width: 95vw; */
   display: flex;
   align-items: center;

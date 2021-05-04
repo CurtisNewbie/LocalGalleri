@@ -14,11 +14,12 @@ const IMAGE_NOT_LOADED = "../assets/img/img_not_loaded.png";
   styleUrls: ["./image-scroll.component.css"],
 })
 export class ImageScrollComponent implements OnInit, AfterViewInit {
+  readonly LIMIT: number = 10;
   itemHeight: number = this.calcItemHeight();
   images: Image[] = [];
   currPage: number = 0;
-  readonly LIMIT: number = 10;
   throttler: Throttler = new Throttler();
+  private isThrottlerEnabled: boolean = true;
 
   @ViewChild("virtualScroll", { static: true })
   virtualScroll: CdkVirtualScrollViewport;
@@ -56,7 +57,7 @@ export class ImageScrollComponent implements OnInit, AfterViewInit {
   }
 
   get(imageUrl: string): string {
-    if (this.throttler.shouldThrottle()) {
+    if (this.throttler.shouldThrottle() && this.isThrottlerEnabled) {
       return IMAGE_NOT_LOADED;
     }
     return imageUrl;

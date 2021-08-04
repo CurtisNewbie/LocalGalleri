@@ -33,30 +33,26 @@ export class ImageScrollComponent implements OnInit, AfterViewInit {
       this.images.length > 0 ? this.images[this.images.length - 1].id : null;
     this.http.nextPage(lastId, this.LIMIT).subscribe({
       next: (v: ImageModelList) => {
-        // append to end
-        let np = toImageList(v);
-        this.images = this.images.concat(np);
+        if (!v) return;
 
-        if (this.images.length > 2 * this.LIMIT) {
-          this.images.splice(0, this.LIMIT);
-        }
+        let np = toImageList(v);
+        this.sortAsc(np);
+        this.images = np;
         this.scrollToFirst();
       },
     });
   }
 
   prevPage(): void {
-    let lastId: number =
-      this.images.length > 0 ? this.images[this.images.length - 1].id : null;
+    let lastId: number = this.images.length > 0 ? this.images[0].id : null;
     this.http.prevPage(lastId, this.LIMIT).subscribe({
       next: (v: ImageModelList) => {
-        // append to head
-        let vp = toImageList(v);
-        this.images = vp.concat(this.images);
+        if (!v) return;
 
-        if (this.images.length > 2 * this.LIMIT) {
-          this.images.splice(this.images.length - this.LIMIT, this.LIMIT);
-        }
+        let vp = toImageList(v);
+        this.sortAsc(vp);
+        this.images = vp;
+        console.log(this.images);
         this.scrollToFirst();
       },
     });
@@ -64,5 +60,11 @@ export class ImageScrollComponent implements OnInit, AfterViewInit {
 
   scrollToFirst(): void {
     this.virtualScroll.scrollToIndex(0, "auto");
+  }
+
+  private sortAsc(arr: Image[]): void {
+    arr.sort((a, b) => {
+      return a.id - b.id;
+    });
   }
 }

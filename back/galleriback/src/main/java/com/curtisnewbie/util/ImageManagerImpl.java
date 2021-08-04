@@ -117,7 +117,7 @@ public class ImageManagerImpl implements ImageManager {
         if (!unmodifiableImgMap.containsKey(lastId)) {
             return new ArrayList<>();
         }
-        NavigableMap<Integer, Path> tailMap = unmodifiableImgMap.headMap(lastId, true).descendingMap();
+        NavigableMap<Integer, Path> tailMap = unmodifiableImgMap.headMap(lastId, false).descendingMap();
         List<Integer> l = new LinkedList<>();
         int i = 0;
         for (Map.Entry<Integer, Path> e : tailMap.entrySet()) {

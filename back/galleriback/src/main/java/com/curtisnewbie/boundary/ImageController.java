@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletResponse;
  * RestController for Image resources
  * </p>
  */
-@CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/image")
 public class ImageController {

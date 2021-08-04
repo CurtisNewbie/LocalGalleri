@@ -1,5 +1,5 @@
 cdk-virtual-scroll-viewport {
-  height: 90vh; /* fixed viewport height */
+  height: 85vh; /* fixed viewport height */
   width: auto;
   display: flex;
   align-items: center;
@@ -7,12 +7,16 @@ cdk-virtual-scroll-viewport {
   justify-content: center;
 }
 
+.nav-bar {
+  height: 5vh;
+}
+
 .btndiv {
   height: 10vh; /* fixed viewport height */
 }
 
 .imgdiv {
-  height: 600px;
+  height: 500px;
 }
 
 ::-webkit-scrollbar {

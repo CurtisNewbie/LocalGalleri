@@ -11,6 +11,10 @@ cdk-virtual-scroll-viewport {
   height: 10vh; /* fixed viewport height */
 }
 
+.imgdiv {
+  height: 600px;
+}
+
 ::-webkit-scrollbar {
   width: 0px;
 }
@@ -28,7 +32,7 @@ cdk-virtual-scroll-viewport {
 } */
 
 img {
+  max-height: 100%;
   max-width: 100%;
-  height: auto;
   /* max-height: 80%; */
 }

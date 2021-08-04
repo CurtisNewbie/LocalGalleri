@@ -3,7 +3,7 @@ import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { Image, ImageModelList, toImageList } from "../../image";
 import { HttpService } from "../http.service";
 
-const MIN_ITEM_HEIGHT = 300; // in pixel
+const ITEM_HEIGHT = 300; // in pixel
 const IMAGE_NOT_LOADED = "../assets/img/img_not_loaded.png";
 
 @Component({
@@ -13,7 +13,6 @@ const IMAGE_NOT_LOADED = "../assets/img/img_not_loaded.png";
 })
 export class ImageScrollComponent implements OnInit, AfterViewInit {
   readonly LIMIT: number = 5;
-  itemHeight: number = this.calcItemHeight();
   images: Image[] = [];
   displayPrevPageBtn: boolean = false;
   displayNextPageBtn: boolean = false;
@@ -29,11 +28,6 @@ export class ImageScrollComponent implements OnInit, AfterViewInit {
     this.nextPage();
   }
 
-  private calcItemHeight(): number {
-    let height = Math.floor(window.innerHeight * 0.75);
-    return height < MIN_ITEM_HEIGHT ? MIN_ITEM_HEIGHT : height;
-  }
-
   nextPage(): void {
     let lastId: number =
       this.images.length > 0 ? this.images[this.images.length - 1].id : null;
@@ -41,16 +35,8 @@ export class ImageScrollComponent implements OnInit, AfterViewInit {
       next: (v: ImageModelList) => {
         // append to end
         let np = toImageList(v);
-        if (
-          this.images.length > 0 &&
-          np.length > 0 &&
-          np[0].id <= this.images[this.images.length - 1].id
-        ) {
-          // we alreaady have this page
-          return;
-        }
-
         this.images = this.images.concat(np);
+
         if (this.images.length > 2 * this.LIMIT) {
           this.images.splice(0, this.LIMIT);
         }
@@ -67,15 +53,6 @@ export class ImageScrollComponent implements OnInit, AfterViewInit {
         // append to head
         let vp = toImageList(v);
         this.images = vp.concat(this.images);
-
-        if (
-          this.images.length > 0 &&
-          vp.length > 0 &&
-          vp[vp.length - 1].id >= this.images[0].id
-        ) {
-          // we alreaady have this page
-          return;
-        }
 
         if (this.images.length > 2 * this.LIMIT) {
           this.images.splice(this.images.length - this.LIMIT, this.LIMIT);

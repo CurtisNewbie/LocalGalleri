@@ -1,10 +1,12 @@
 <div class="text-center bg-secondary">
     <div style=" background: gray;">
-        <cdk-virtual-scroll-viewport #virtualScroll [itemSize]="300" [maxBufferPx]="1200">
-            <div #imgContainers class="bg-white rounded p-2 m-5" *cdkVirtualFor="let img of images;">
-                <a [href]="img.href" target="_blank">
-                    <img class="img-fluid rounded" [src]="img.href" />
-                </a>
+        <cdk-virtual-scroll-viewport #virtualScroll [itemSize]="600" [maxBufferPx]="2500">
+            <div *cdkVirtualFor="let img of images; templateCacheSize:0">
+                <div class="bg-white rounded p-2 m-5 imgdiv">
+                    <a [href]="img.href" target="_blank">
+                        <img class="rounded" [src]="img.href" />
+                    </a>
+                </div>
             </div>
         </cdk-virtual-scroll-viewport>
         <div class="text-right btndiv">

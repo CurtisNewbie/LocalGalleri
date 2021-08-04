@@ -1,15 +1,15 @@
-<div class="container-fluid text-center bg-secondary">
-    <cdk-virtual-scroll-viewport #virtualScroll [itemSize]="itemHeight" [maxBufferPx]="itemHeight">
-        <div #imgContainers class="imgdiv bg-white rounded mx-auto" *cdkVirtualFor="let img of images;"
-            [style.height.px]="itemHeight">
-            <a [href]="img.href" target="_blank" class="h-100 d-flex">
-                <img class="img-fluid align-self-center mx-auto rounded" [src]="get(img.href)" />
-            </a>
+<div class="text-center bg-secondary">
+    <div style=" background: gray;">
+        <cdk-virtual-scroll-viewport #virtualScroll [itemSize]="300" [maxBufferPx]="1200">
+            <div #imgContainers class="bg-white rounded p-2 m-5" *cdkVirtualFor="let img of images;">
+                <a [href]="img.href" target="_blank">
+                    <img class="img-fluid rounded" [src]="img.href" />
+                </a>
+            </div>
+        </cdk-virtual-scroll-viewport>
+        <div class="text-right btndiv">
+            <button class="btn btn-sm btn-dark button m-3" (click)="prevPage()">previous page</button>
+            <button class="btn btn-sm btn-dark button m-3" (click)="nextPage()">next page</button>
         </div>
-    </cdk-virtual-scroll-viewport>
-    <div class="text-right">
-        <button class="btn btn-primary button m-2">Current page: {{currPage}}</button>
-        <button class="btn btn-primary button m-2" (click)="lastPage()">Last page</button>
-        <button class="btn btn-primary button m-2" (click)="nextPage()">Next page</button>
     </div>
 </div>

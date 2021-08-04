@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from "@angular/core";
 import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
-import { Image, toImageList } from "../../image";
+import { Image, ImageModelList, toImageList } from "../../image";
 import { HttpService } from "../http.service";
-
-import { Throttler } from "src/throttler";
 
 const MIN_ITEM_HEIGHT = 300; // in pixel
 const IMAGE_NOT_LOADED = "../assets/img/img_not_loaded.png";
@@ -14,53 +12,21 @@ const IMAGE_NOT_LOADED = "../assets/img/img_not_loaded.png";
   styleUrls: ["./image-scroll.component.css"],
 })
 export class ImageScrollComponent implements OnInit, AfterViewInit {
-  readonly LIMIT: number = 10;
+  readonly LIMIT: number = 5;
   itemHeight: number = this.calcItemHeight();
   images: Image[] = [];
-  currPage: number = 0;
-  throttler: Throttler = new Throttler();
-  private isThrottlerEnabled: boolean = true;
+  displayPrevPageBtn: boolean = false;
+  displayNextPageBtn: boolean = false;
 
   @ViewChild("virtualScroll", { static: true })
   virtualScroll: CdkVirtualScrollViewport;
 
   constructor(private http: HttpService) {}
 
-  ngAfterViewInit(): void {
-    this.virtualScroll.renderedRangeStream.subscribe(
-      this.throttler.scrollThrottleObserver()
-    );
-  }
+  ngAfterViewInit(): void {}
 
   ngOnInit() {
-    // use pagination instead of fetching all images
-    //   console.log("Item Height:", this.itemHeight);
-    //   this.fetchAllImageUrls();
     this.nextPage();
-  }
-
-  private fetchAllImageUrls(): void {
-    this.http.allImageModels().subscribe({
-      next: (v) => {
-        this.images = toImageList(v);
-      },
-    });
-  }
-
-  private fetchImageUrlsByPage(limit: number, page: number): void {
-    this.http.imageModelsOf(page, limit).subscribe({
-      next: (v) => {
-        this.images = toImageList(v);
-        this.currPage = page;
-      },
-    });
-  }
-
-  get(imageUrl: string): string {
-    if (this.throttler.shouldThrottle() && this.isThrottlerEnabled) {
-      return IMAGE_NOT_LOADED;
-    }
-    return imageUrl;
   }
 
   private calcItemHeight(): number {
@@ -69,13 +35,57 @@ export class ImageScrollComponent implements OnInit, AfterViewInit {
   }
 
   nextPage(): void {
-    this.fetchImageUrlsByPage(this.LIMIT, this.currPage + 1);
+    let lastId: number =
+      this.images.length > 0 ? this.images[this.images.length - 1].id : null;
+    this.http.nextPage(lastId, this.LIMIT).subscribe({
+      next: (v: ImageModelList) => {
+        // append to end
+        let np = toImageList(v);
+        if (
+          this.images.length > 0 &&
+          np.length > 0 &&
+          np[0].id <= this.images[this.images.length - 1].id
+        ) {
+          // we alreaady have this page
+          return;
+        }
+
+        this.images = this.images.concat(np);
+        if (this.images.length > 2 * this.LIMIT) {
+          this.images.splice(0, this.LIMIT);
+        }
+        this.scrollToFirst();
+      },
+    });
   }
 
-  lastPage(): void {
-    if (this.currPage == 1) {
-      return;
-    }
-    this.fetchImageUrlsByPage(this.LIMIT, this.currPage - 1);
+  prevPage(): void {
+    let lastId: number =
+      this.images.length > 0 ? this.images[this.images.length - 1].id : null;
+    this.http.prevPage(lastId, this.LIMIT).subscribe({
+      next: (v: ImageModelList) => {
+        // append to head
+        let vp = toImageList(v);
+        this.images = vp.concat(this.images);
+
+        if (
+          this.images.length > 0 &&
+          vp.length > 0 &&
+          vp[vp.length - 1].id >= this.images[0].id
+        ) {
+          // we alreaady have this page
+          return;
+        }
+
+        if (this.images.length > 2 * this.LIMIT) {
+          this.images.splice(this.images.length - this.LIMIT, this.LIMIT);
+        }
+        this.scrollToFirst();
+      },
+    });
+  }
+
+  scrollToFirst(): void {
+    this.virtualScroll.scrollToIndex(0, "auto");
   }
 }

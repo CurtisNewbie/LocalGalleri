@@ -1,22 +1,18 @@
 cdk-virtual-scroll-viewport {
-  height: 94vh; /* fixed viewport height*/
-  /* width: 95vw; */
+  height: 90vh; /* fixed viewport height */
+  width: auto;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  /* list-style: none; */
+}
+
+.btndiv {
+  height: 10vh; /* fixed viewport height */
 }
 
 ::-webkit-scrollbar {
   width: 0px;
-}
-
-.imgdiv {
-  width: 85vw;
-  margin: 10px;
-  padding: 10px;
-  background: whitesmoke;
 }
 
 /* @media (max-width: 549) {
@@ -32,7 +28,7 @@ cdk-virtual-scroll-viewport {
 } */
 
 img {
-  max-width: 98%;
+  max-width: 100%;
   height: auto;
-  max-height: 98%;
+  /* max-height: 80%; */
 }

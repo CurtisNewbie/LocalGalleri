@@ -1,4 +1,4 @@
-package com.curtisnewbie.util;
+package com.curtisnewbie.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;

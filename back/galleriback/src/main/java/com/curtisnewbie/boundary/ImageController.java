@@ -7,6 +7,7 @@ import com.curtisnewbie.config.ManageConfig;
 import com.curtisnewbie.config.PagingConstants;
 import com.curtisnewbie.model.ImageModel;
 import com.curtisnewbie.model.ImageModelAssembler;
+import com.curtisnewbie.module.auth.aop.LogOperation;
 import com.curtisnewbie.util.ImageManager;
 
 import com.curtisnewbie.vo.LastPageReqVo;
@@ -49,6 +50,7 @@ public class ImageController {
         this.manageConfig = manageConfig;
     }
 
+    @LogOperation(name = "get image by id", description = "Download image by id")
     @GetMapping(path = "/id/{imgId}", produces = MediaType.IMAGE_PNG_VALUE)
     public void imageById(@PathVariable("imgId") int imgId, HttpServletResponse resp) {
         try {
@@ -59,6 +61,7 @@ public class ImageController {
         }
     }
 
+    @LogOperation(name = "get image list", description = "fetch image list")
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<ImageModel>> images() {
         CollectionModel<ImageModel> models = assembler.toModels(manageConfig.isListShuffled() ?
@@ -67,6 +70,7 @@ public class ImageController {
         return ResponseEntity.ok(models);
     }
 
+    @LogOperation(name = "get image list in pages", description = "fetch image list in pages")
     @GetMapping(path = "/page/{pageNo}/limit/{perPage}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<ImageModel>> imagesOfPage(@PathVariable("pageNo") int page,
                                                                     @PathVariable("perPage") int limit) {
@@ -82,6 +86,7 @@ public class ImageController {
         }
     }
 
+    @LogOperation(name = "get next page of image list", description = "fetch next page of image list")
     @PostMapping(path = "/page/next", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<ImageModel>> nextPage(@RequestBody NextPageReqVo vo) {
         Integer limit = vo.getLimit();
@@ -113,6 +118,7 @@ public class ImageController {
         }
     }
 
+    @LogOperation(name = "get prev page of image list", description = "fetch prev page of image list")
     @PostMapping(path = "/page/prev", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<ImageModel>> prevPage(@RequestBody LastPageReqVo vo) {
         Integer limit = vo.getLimit();
